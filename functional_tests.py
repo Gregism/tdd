@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 class NewVisitorTest(unittest.TestCase):
@@ -15,17 +16,31 @@ class NewVisitorTest(unittest.TestCase):
 
     #Check out how the title mentions to-do lists
     self.assertIn('To-Do', self.browser.title)
-    self.fail('Finish the test!')
-    # Enter a to-do
+    header_text = self.browser.find_element_by_tag_name('h1').text
+    self.assertIn('To-Do', header_text)
 
+    # Enter a to-do
+    inputbox =  self.browser.find_element_by_id('id_new_item')
+    self.assertEqual(
+      inputbox.get_attributes('placeholder'),
+      'Enter a to-do item'
+    )
     # Type "Buy Peacock Feathers"
+    inputbox.send_keys("Buy Peacock Feathers")
 
     # On enter, the page updates and lists 
     # "1: Buy Peacock Feathers" as a new to-do list item
+    inputbox.send_keys(Keys.ENTER)
+
+    table = self.browser.find_element_by_id('id_list_table')
+    rows = table.find_elements_by_tag_name('tr')
+    self.assertTrue(
+      any(row.text == '1: Buy Peacock Feathers' for row in row)
+    )
 
     # There is still a box to add another item
     # Enter "Use Peacock Feathers to make a fly"
-
+    self.fail('Finish the test!')
     # The page updates and shows both items
 
     # The should be a unique url to revisit to-do list
