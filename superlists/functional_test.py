@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 class NewVisitorTest(unittest.TestCase):
@@ -16,8 +17,8 @@ class NewVisitorTest(unittest.TestCase):
     self.browser.get('http://localhost:8000')
 
     self.assertIn('To-Do',self.browser.title)
-    header_text = self.browser.find_element_by_tag_name('h1')
-    self.asserIn('To-Do', header_text)
+    header_text = self.browser.find_element_by_tag_name('h1').text
+    self.assertIn('To-Do', header_text)
 
     #Invitation to enter a to-do item
     inputbox = self.browser.find_element_by_id('id_new_item')
