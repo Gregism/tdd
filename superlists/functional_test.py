@@ -10,6 +10,11 @@ class NewVisitorTest(unittest.TestCase):
   def tearDown(self):
     self.browser.quit()
 
+  def check_for_row_in_list(self, row_text):
+    table = self.browser.find_element_by_id('id_list_table')
+    rows = table.find_elements_by_tag_name('tr')
+    self.assertIn(row_text,[row.text for row in rows])
+
   def test_can_start_list_and_retreive_later(self):
 
 
@@ -34,25 +39,23 @@ class NewVisitorTest(unittest.TestCase):
     #after hitting enter the page lists
     # "1: Learn Linux"
     #time.sleep(10)
-
-    table = self.browser.find_element_by_id('id_list_table')
-    rows = table.find_elements_by_tag_name('tr')
-    self.assertIn('1: Learn Linux',[row.text for row in rows])
+    self.check_for_row_in_list('1: Learn Linux')
+    
     
 
     #There is a box to enter anothr to-do item
     #Enter: "Figure out what DevOps is"
     #Type "Learn Linux"
     #inputbox = self.browser.find_element_by_id('id_new_item')
+    inputbox = self.browser.find_element_by_id('id_new_item')
     inputbox.send_keys('Figure out what DevOps is')
     inputbox.send_keys(Keys.ENTER)
-    self.fail('Finish the test!')
+    
     #Page updates, shows both items
     #table = self.browser.find_element_by_id('id_list_table')
-    rows = table.find_elements_by_tag_name('tr')
-    self.assertIn('1: Learn Linux',[row.text for row in rows])
-    self.assertIn('2: Figure out what DevOps is',[row.text for row in rows])
-
+    self.check_for_row_in_list('1: Learn Linux')
+    self.check_for_row_in_list('2: Figure out what DevOps is')
+    self.fail('Finish the test!')
     #site generates unique url
 
     #visit url see your list
