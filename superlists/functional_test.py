@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import unittest
+import unittest, time
 
 class NewVisitorTest(unittest.TestCase):
   def setUp(self):
@@ -33,18 +33,26 @@ class NewVisitorTest(unittest.TestCase):
 
     #after hitting enter the page lists
     # "1: Learn Linux"
+    #time.sleep(10)
 
     table = self.browser.find_element_by_id('id_list_table')
     rows = table.find_elements_by_tag_name('tr')
-    self.assertTrue(
-      any(row.text == '1: Learn Linux' for row in rows)
-    )
-    self.fail('Finish the test!')
+    self.assertIn('1: Learn Linux',[row.text for row in rows])
+    
 
     #There is a box to enter anothr to-do item
     #Enter: "Figure out what DevOps is"
-
+    #Type "Learn Linux"
+    #inputbox = self.browser.find_element_by_id('id_new_item')
+    inputbox.send_keys('Figure out what DevOps is')
+    inputbox.send_keys(Keys.ENTER)
+    self.fail('Finish the test!')
     #Page updates, shows both items
+    #table = self.browser.find_element_by_id('id_list_table')
+    rows = table.find_elements_by_tag_name('tr')
+    self.assertIn('1: Learn Linux',[row.text for row in rows])
+    self.assertIn('2: Figure out what DevOps is',[row.text for row in rows])
+
     #site generates unique url
 
     #visit url see your list
