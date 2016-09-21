@@ -1,8 +1,8 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import unittest, time
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
   def setUp(self):
     self.browser = webdriver.Firefox()
     self.browser.implicitly_wait(3)
@@ -19,7 +19,7 @@ class NewVisitorTest(unittest.TestCase):
 
 
     # Go to the homepage
-    self.browser.get('http://localhost:8000')
+    self.browser.get(self.live_server_url)
 
     self.assertIn('To-Do',self.browser.title)
     header_text = self.browser.find_element_by_tag_name('h1').text
@@ -59,6 +59,3 @@ class NewVisitorTest(unittest.TestCase):
     #site generates unique url
 
     #visit url see your list
-
-if __name__ == '__main__':
-  unittest.main(warnings='ignore')
