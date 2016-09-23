@@ -36,6 +36,8 @@ class NewVisitorTest(LiveServerTestCase):
     inputbox.send_keys('Learn Linux')
     inputbox.send_keys(Keys.ENTER)
 
+    gregs_list_url = self.browser.current_url
+    self.assertRegex(gregs_list_url, '/lists/.+')
     #after hitting enter the page lists
     # "1: Learn Linux"
     #time.sleep(10)
@@ -51,11 +53,23 @@ class NewVisitorTest(LiveServerTestCase):
     inputbox.send_keys('Figure out what DevOps is')
     inputbox.send_keys(Keys.ENTER)
     
+    
     #Page updates, shows both items
     #table = self.browser.find_element_by_id('id_list_table')
     self.check_for_row_in_list('1: Learn Linux')
     self.check_for_row_in_list('2: Figure out what DevOps is')
-    self.fail('Finish the test!')
-    #site generates unique url
+    self.browser.quit()
+    self.browser = webdriver.Firefox()
+    
+    self.browser.get(self.live_server_url)
+    page_text = self.browser.find_element_by_tag_name('body').text
+    self.assertNotIn('Learn Linux', page_text)
+    self.assertNotIn('Figure out what DevOps is', page_text)
 
-    #visit url see your list
+    inputbox = self.browser.find_element_by_id('id_new_item')
+    inputbox.send_keys('Learn more')
+    inputbox.send_keys(Keys.ENTER)
+
+    self.assertNotIn('Learn Linux', page_text)
+    self.assertIn('Learn more', page_text)
+
