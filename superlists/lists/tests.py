@@ -5,6 +5,20 @@ from django.template.loader import render_to_string
 from lists.views import home_page
 from lists.models import Item
 
+class ListViewTest(TestCase):
+  def test_uses_list_template(self):
+    response = self.client.get('/lists/the-only-list-in-the-world/')
+    self.assertTemplateUsed(response, 'list.html')
+
+  def test_displays_all_items(self):
+    Item.objects.create(text='item 1')
+    Item.objects.create(text='item 2')
+
+    response = self.client.get('/lists/the-only-list-in-the-world/')
+
+    self.assertContains(response, 'item 1')
+    self.assertContains(response, 'item 2')
+
 class ItemModelTest(TestCase):
   def test_saving_and_retrieving_items(self):
     first_item = Item()
@@ -53,17 +67,7 @@ class HomePageTest(TestCase):
     response = home_page(request)
 
     self.assertEqual(response.status_code, 302)
-    self.assertEqual(response['location'],'/')
-
-  def test_homepage_displays_all_list_item(self):
-    Item.objects.create(text='item 1')
-    Item.objects.create(text='item 2')
-
-    request = HttpRequest()
-    response = home_page(request)
-
-    self.assertIn('item 1', response.content.decode())
-    self.assertIn('item 2', response.content.decode())
+    self.assertEqual(response['location'],'/lists/the-only-list-in-the-world/')
     
     # self.assertIn('A new list item', response.content.decode())
     # expected_html = render_to_string(
